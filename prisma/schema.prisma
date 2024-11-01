@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Aluno {
+  id                  String           @id @default(uuid()) 
+  nomeAluno           String
+  emailAluno          String           @unique
+  senha               String
+  dataNascimento      DateTime?
+  dataMatricula       DateTime?        @default(now())
+  progresso           Int?             @default(0)
+  notificacoesAtivas  Boolean          @default(true)
+  livrosSelecionados  BookSelection[]  @relation("AlunoLivros")
+}
+
+model BookSelection {
+  id         String   @id @default(uuid())
+  alunoId    String
+  aluno      Aluno    @relation("AlunoLivros", fields: [alunoId], references: [id])
+  title      String
+  isSelected Boolean
+}
